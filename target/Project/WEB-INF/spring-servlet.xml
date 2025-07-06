@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- Scan for Spring components -->
+	<context:component-scan base-package="com.warehouse.controllers" />
+
+	<!-- Enable MVC annotations -->
+	<mvc:annotation-driven />
+
+	<!-- View resolver for JSP files -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- Static resources -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Redirect root to login page -->
+	<mvc:view-controller path="/" view-name="redirect:/login" />
+
+	<!-- DataSource -->
+	<bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/wpj?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>
+
+	<!-- JdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="ds"/>
+	</bean>
+
+	<!-- UserDao -->
+	<bean id="userDao" class="com.warehouse.dao.UserDao">
+		<property name="template" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- UserService -->
+	<bean id="userService" class="com.warehouse.service.UserService">
+		<property name="userDao" ref="userDao"/>
+	</bean>
+
+	<!-- CustomerDao -->
+	<bean id="customerDao" class="com.warehouse.dao.CustomerDao">
+		<property name="template" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- CustomerService -->
+	<bean id="customerService" class="com.warehouse.service.CustomerService">
+		<property name="customerDao" ref="customerDao"/>
+	</bean>
+
+	<!-- CustomerController -->
+	<bean id="customerController" class="com.warehouse.controllers.CustomerController">
+		<property name="customerService" ref="customerService"/>
+	</bean>
+
+	<!-- DashboardController -->
+	<bean id="dashboardController" class="com.warehouse.controllers.DashboardController">
+		<property name="customerService" ref="customerService"/>
+	</bean>
+
+	<!-- SupplierDao -->
+	<bean id="supplierDao" class="com.warehouse.dao.SupplierDao">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- SupplierService -->
+	<bean id="supplierService" class="com.warehouse.service.SupplierService">
+		<property name="supplierDao" ref="supplierDao"/>
+	</bean>
+
+	<!-- SupplierController -->
+	<bean id="supplierController" class="com.warehouse.controllers.SupplierController">
+		<property name="supplierService" ref="supplierService"/>
+	</bean>
+
+	<!-- WarehouseDao -->
+	<bean id="warehouseDao" class="com.warehouse.dao.WarehouseDao">
+		<property name="jdbcTemplate" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- WarehouseService -->
+	<bean id="warehouseService" class="com.warehouse.service.WarehouseService">
+		<property name="warehouseDao" ref="warehouseDao"/>
+	</bean>
+
+	<!-- WarehouseController -->
+	<bean id="warehouseController" class="com.warehouse.controllers.WarehouseController">
+		<property name="warehouseService" ref="warehouseService"/>
+	</bean>
+
+	<!-- ProductDao -->
+	<bean id="productDao" class="com.warehouse.dao.ProductDao">
+		<property name="template" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- ProductService -->
+	<bean id="productService" class="com.warehouse.service.ProductService">
+		<property name="productDao" ref="productDao"/>
+	</bean>
+
+	<!-- CategoryDao -->
+	<bean id="categoryDao" class="com.warehouse.dao.CategoryDao">
+		<property name="template" ref="jdbcTemplate"/>
+	</bean>
+
+	<!-- CategoryService -->
+	<bean id="categoryService" class="com.warehouse.service.CategoryService">
+		<property name="categoryDao" ref="categoryDao"/>
+	</bean>
+
+	<!-- ProductController with both services injected -->
+	<bean id="productController" class="com.warehouse.controllers.ProductController">
+		<property name="productService" ref="productService"/>
+		<property name="categoryService" ref="categoryService"/>
+	</bean>
+
+
+</beans>
