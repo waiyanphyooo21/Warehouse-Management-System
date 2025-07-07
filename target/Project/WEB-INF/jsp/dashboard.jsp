@@ -314,7 +314,7 @@
         </a>
       </div>
         <div class="nav-item ${param.active == 'product-add' ? 'active' : ''}">
-          <a href="${pageContext.request.contextPath}/products/add" class="nav-link">
+          <a href="${pageContext.request.contextPath}/products" class="nav-link">
             <i class="fas fa-box me-2"></i>Products
           </a>
         </div>

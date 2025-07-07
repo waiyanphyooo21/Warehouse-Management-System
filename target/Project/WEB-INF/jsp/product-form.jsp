@@ -373,10 +373,14 @@
         </div>
     </div>
 
-    <h3 class="mb-4">${product.productId == null ? "Add New Product" : "Edit Product"}</h3>
+    <h3 class="mb-4">
+        <c:choose>
+            <c:when test="${product.productId == null}">Add New Product</c:when>
+            <c:otherwise>Edit Product</c:otherwise>
+        </c:choose>
+    </h3>
 
     <form action="${pageContext.request.contextPath}${product.productId == null ? '/products/add' : '/products/edit'}" method="post">
-
         <c:if test="${not empty product.productId}">
             <input type="hidden" name="productId" value="${product.productId}" />
         </c:if>
@@ -384,32 +388,60 @@
         <div class="mb-3">
             <label for="productName" class="form-label">Product Name</label>
             <input type="text" name="productName" id="productName" class="form-control"
-                   value="${product.productName != null ? product.productName : ''}" required />
+                   value="${product.productName}" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="productCode" class="form-label">Product Code</label>
+            <input type="text" name="productCode" id="productCode" class="form-control"
+                   value="${product.productCode}" />
         </div>
 
         <div class="mb-3">
             <label for="categoryId" class="form-label">Category</label>
             <select name="categoryId" id="categoryId" class="form-select" required>
-                <option value="" disabled ${product.categoryId == null ? 'selected' : ''}>-- Select Category --</option>
+                <option value="" disabled <c:if test="${product.categoryId == null}">selected</c:if>>-- Select Category --</option>
                 <c:forEach var="cat" items="${categories}">
-                    <option value="${cat.categoryId}" ${cat.categoryId == product.categoryId ? 'selected' : ''}>
+                    <option value="${cat.categoryId}" <c:if test="${cat.categoryId == product.categoryId}">selected</c:if>>
                             ${cat.categoryName}
                     </option>
                 </c:forEach>
             </select>
-
         </div>
 
         <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
-            <input type="number" step="0.01" name="price" id="price" class="form-control"
-                   value="${product.price != null ? product.price : ''}" required />
+            <label for="salePrice" class="form-label">Sale Price</label>
+            <input type="number" step="0.01" name="salePrice" id="salePrice" class="form-control"
+                   value="${product.salePrice}" required />
         </div>
 
         <div class="mb-3">
-            <label for="unit" class="form-label">Unit</label>
-            <input type="text" name="unit" id="unit" class="form-control"
-                   value="${product.unit != null ? product.unit : ''}" required />
+            <label for="purchasePrice" class="form-label">Purchase Price</label>
+            <input type="number" step="0.01" name="purchasePrice" id="purchasePrice" class="form-control"
+                   value="${product.purchasePrice}" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="unitId" class="form-label">Unit</label>
+            <select name="unitId" id="unitId" class="form-select" required>
+                <option value="" disabled <c:if test="${product.unitId == null}">selected</c:if>>-- Select Unit --</option>
+                <c:forEach var="unit" items="${units}">
+                    <option value="${unit.unitId}" <c:if test="${unit.unitId == product.unitId}">selected</c:if>>
+                            ${unit.unitName}
+                    </option>
+                </c:forEach>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="stockLocation" class="form-label">Stock Location</label>
+            <input type="text" name="stockLocation" id="stockLocation" class="form-control"
+                   value="${product.stockLocation}" />
+        </div>
+
+        <div class="mb-3">
+            <label for="stockRemark" class="form-label">Remark</label>
+            <textarea name="stockRemark" id="stockRemark" class="form-control" rows="3">${product.stockRemark}</textarea>
         </div>
 
         <div class="d-flex justify-content-between">
