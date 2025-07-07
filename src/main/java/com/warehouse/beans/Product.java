@@ -4,21 +4,24 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class Product {
-    private int productId;          // maps to stock_id
-    private String productName;     // stock_name
-    private int categoryId;
-    private Category category;      // optional for display/join
-    private BigDecimal purchasePrice;
-    private BigDecimal salePrice;
+
+    private int productId;              // maps to stock_id
+    private String productName;         // stock_name
+    private String productCode;         // product_code
     private String stockLocation;
     private String stockRemark;
+    private BigDecimal purchasePrice;
+    private BigDecimal salePrice;
+    private int categoryId;
+    private Category category;          // optional for joins/view
     private int unitId;
+    private Unit unit;                  // optional for joins/view
     private int supplierId;
     private int warehouseId;
     private Timestamp createdAt;
+    private Timestamp updatedAt;
 
-    // Getters and setters
-
+    // --- Getters & Setters ---
     public int getProductId() {
         return productId;
     }
@@ -33,32 +36,11 @@ public class Product {
         this.productName = productName;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public String getProductCode() {
+        return productCode;
     }
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public BigDecimal getPurchasePrice() {
-        return purchasePrice;
-    }
-    public void setPurchasePrice(BigDecimal purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public BigDecimal getSalePrice() {
-        return salePrice;
-    }
-    public void setSalePrice(BigDecimal salePrice) {
-        this.salePrice = salePrice;
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
     public String getStockLocation() {
@@ -75,11 +57,46 @@ public class Product {
         this.stockRemark = stockRemark;
     }
 
+    public BigDecimal getPurchasePrice() {
+        return purchasePrice;
+    }
+    public void setPurchasePrice(BigDecimal purchasePrice) {
+        this.purchasePrice = purchasePrice;
+    }
+
+    public BigDecimal getSalePrice() {
+        return salePrice;
+    }
+    public void setSalePrice(BigDecimal salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     public int getUnitId() {
         return unitId;
     }
     public void setUnitId(int unitId) {
         this.unitId = unitId;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
     public int getSupplierId() {
@@ -101,5 +118,12 @@ public class Product {
     }
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

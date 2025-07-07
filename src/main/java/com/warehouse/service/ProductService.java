@@ -7,8 +7,13 @@ import java.util.List;
 
 public class ProductService {
 
-    private ProductDao productDao;
+    private ProductDao productDao;  // no final, allows setter injection
 
+    // Default constructor needed for Spring to instantiate
+    public ProductService() {
+    }
+
+    // Setter method for Spring to inject the DAO
     public void setProductDao(ProductDao productDao) {
         this.productDao = productDao;
     }

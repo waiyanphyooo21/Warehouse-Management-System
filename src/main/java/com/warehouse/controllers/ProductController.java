@@ -2,8 +2,10 @@ package com.warehouse.controllers;
 
 import com.warehouse.beans.Category;
 import com.warehouse.beans.Product;
+import com.warehouse.beans.Unit;
 import com.warehouse.service.CategoryService;
 import com.warehouse.service.ProductService;
+import com.warehouse.service.UnitService;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,92 +13,97 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/products")
 public class ProductController {
 
-    private ProductService productService;
-    private CategoryService categoryService; // inject categoryService too
+    private final ProductService productService;
+    private final CategoryService categoryService;
+    private final UnitService unitService;
 
-    public void setProductService(ProductService productService) {
+    public ProductController(ProductService productService, CategoryService categoryService, UnitService unitService) {
         this.productService = productService;
-    }
-
-    public void setCategoryService(CategoryService categoryService) {
         this.categoryService = categoryService;
+        this.unitService = unitService;
     }
 
-
-    @GetMapping("/products")
+    // LIST PRODUCTS
+    @GetMapping
     public String showProductList(Model model, HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) return "redirect:/login";
 
         List<Product> products = productService.getAllProducts();
-        if (products == null) {
-            products = new ArrayList<>();
-        }
-
         model.addAttribute("products", products);
         model.addAttribute("active", "product");
         return "product";
     }
 
-    @GetMapping("/products/add")
+    // SHOW ADD FORM
+    @GetMapping("/add")
     public String showAddProductForm(Model model, HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) return "redirect:/login";
 
-        model.addAttribute("product", new Product());
-
-        List<Category> categories = categoryService.getAllCategories();
-        System.out.println("Categories count: " + (categories == null ? "null" : categories.size()));
-        model.addAttribute("categories", categories);
-
+        Product product = new Product();  // empty product for form
+        model.addAttribute("product", product);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("units", unitService.getAllUnits());
         model.addAttribute("active", "product");
         return "product-form";
     }
 
-
-    @PostMapping("/products/add")
-    public String saveNewProduct(@ModelAttribute Product product, HttpSession session) {
+    // SAVE NEW PRODUCT
+    @PostMapping("/add")
+    public String saveNewProduct(@ModelAttribute("product") Product product,
+                                 @RequestParam("categoryId") int categoryId,
+                                 @RequestParam("unitId") int unitId,
+                                 HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) return "redirect:/login";
+
+        Category category = categoryService.getCategoryById(categoryId);
+        Unit unit = unitService.getUnitById(unitId);
+        product.setCategory(category);
+        product.setUnit(unit);
 
         productService.saveProduct(product);
         return "redirect:/products";
     }
 
-    @GetMapping("/products/edit/{id}")
+    // SHOW EDIT FORM
+    @GetMapping("/edit/{id}")
     public String showEditProductForm(@PathVariable("id") int id, Model model, HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) return "redirect:/login";
 
         Product product = productService.getProductById(id);
         if (product == null) return "redirect:/products";
 
-        // Set categoryId for the form select field
-        if (product.getCategory() != null) {
-            product.setCategoryId(product.getCategory().getCategoryId());
-        }
-
         model.addAttribute("product", product);
-
-        // Add categories list for dropdown
-        List<Category> categories = categoryService.getAllCategories();
-        model.addAttribute("categories", categories);
-
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("units", unitService.getAllUnits());
         model.addAttribute("active", "product");
         return "product-form";
     }
 
-    @PostMapping("/products/edit")
-    public String updateProduct(@ModelAttribute Product product, HttpSession session) {
+    // UPDATE PRODUCT
+    @PostMapping("/edit")
+    public String updateProduct(@ModelAttribute("product") Product product,
+                                @RequestParam("categoryId") int categoryId,
+                                @RequestParam("unitId") int unitId,
+                                HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) return "redirect:/login";
+
+        Category category = categoryService.getCategoryById(categoryId);
+        Unit unit = unitService.getUnitById(unitId);
+        product.setCategory(category);
+        product.setUnit(unit);
 
         productService.updateProduct(product);
         return "redirect:/products";
     }
 
-    @GetMapping("/products/delete/{id}")
+    // DELETE PRODUCT
+    @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable("id") int id, HttpSession session) {
         if (session.getAttribute("loggedInUser") == null) return "redirect:/login";
 
