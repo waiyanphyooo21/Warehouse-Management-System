@@ -360,7 +360,7 @@
 
       </div>
       <div class="nav-item ${param.active == 'voucher' ? 'active' : ''}">
-        <a href="${pageContext.request.contextPath}/voucher/list" class="nav-link">
+        <a href="${pageContext.request.contextPath}/voucher" class="nav-link">
           <i class="fas fa-ticket-alt me-2"></i>Vouchers
         </a>
       </div>
